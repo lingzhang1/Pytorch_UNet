@@ -16,7 +16,7 @@ import scipy.misc
 from matplotlib import pyplot as plt
 from dataloader import ImageNet_Dataloader
 from PIL import Image
-from network import netG, netD
+from network import Unet
 import torchvision.utils as vutils
 
 
@@ -35,12 +35,12 @@ def weights_init_xavier(m):
 
 
 # batch_size = 24
-netD = netD().cuda(0)
-netD.apply(weights_init_xavier)
-netD.train(True)
+net = Unet().cuda(0)
+net.apply(weights_init_xavier)
+net.train(True)
 
 
-optimizerD = optim.Adam(netD.parameters(), lr=0.005, betas=(0.5, 0.999))
+optimizerD = optim.Adam(net.parameters(), lr=0.005, betas=(0.5, 0.999))
 
 #Binary Cross Entropy
 criterion = nn.BCELoss(size_average=True).cuda(0)
@@ -63,9 +63,9 @@ for epo_num in range(500):
         real_img, real_mask = Variable(real_img).cuda(0), Variable(real_mask).cuda(0)
         # batch_size = real_img.size(0)
 
-        netD.zero_grad()
+        net.zero_grad()
 
-        pred_mask_tmp = netD(real_img)
+        pred_mask_tmp = net(real_img)
 
         pred_mask = pred_mask_tmp.squeeze(1)
         pred_mask = pred_mask.view(-1)

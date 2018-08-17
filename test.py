@@ -21,13 +21,13 @@ import cv2
 import math
 from dataloader import ImageNet_Dataloader
 from PIL import Image
-from network import netG, netD
+from network import Unet
 
 batch_size = 200
 iterations = 60000
 
-with open('./1000netD.ckpt', 'rb') as f:
-    netD = torch.load(f).cuda(0)
+with open('./1000net.ckpt', 'rb') as f:
+    net = torch.load(f).cuda(0)
 
 
 data_path = '/media/tensor-server/ee577d95-535d-40b2-88db-5546defabb74/imagenet20_rgbmsk_v0/ImageNet20/'
@@ -40,7 +40,7 @@ for i, data in enumerate(trainloader):
     rgb_img, mask = data
     step_index = step_index + 1
     rgb_img, mask = Variable(rgb_img).cuda(0), Variable(mask).cuda(0)
-    predict_msk = netD(rgb_img)
+    predict_msk = net(rgb_img)
     print('+++++++++++++++++++++++++++')
     # print(rgb_img.size())
     # print(predict_msk.size())

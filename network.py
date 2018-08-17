@@ -3,51 +3,11 @@ import torch.nn as nn
 from torch.nn import init
 import numpy as np
 
-# Generator network to generate fake images from noise
-# Input is 1*100 noise vector, the output is 128*128 images
-class netG(nn.Module):
-    def __init__(self):
-        super(netG, self).__init__()
-        self.main = nn.Sequential(
-
-            nn.ConvTranspose2d(100, 512, 4, 1, 0, bias=False),
-            nn.BatchNorm2d(64 * 8),
-            nn.ReLU(True),
-            # state size. (ngf*8) x 4 x 4
-            nn.ConvTranspose2d(512, 256, 4, 2, 1, bias=False),
-            nn.BatchNorm2d(256),
-            nn.ReLU(True),
-            # state size. (ngf*4) x 8 x 8
-            nn.ConvTranspose2d(256, 128, 4, 2, 1, bias=False),
-            nn.BatchNorm2d(128),
-            nn.ReLU(True),
-            # state size. (ngf*2) x 16 x 16
-            nn.ConvTranspose2d(128,     64, 4, 2, 1, bias=False),
-            nn.BatchNorm2d(64),
-            nn.ReLU(True),
-
-            # state size. (ngf*2) x 32 x 32
-            nn.ConvTranspose2d(64,     32, 4, 2, 1, bias=False),
-            nn.BatchNorm2d(32),
-            nn.ReLU(True),
-
-            # state size. (ngf) x 64 x 64
-            nn.ConvTranspose2d(    32,      3, 4, 2, 1, bias=False),
-            nn.Tanh()
-            # state size. (nc) x 128 x 128
-        )
-
-    def forward(self, input):
-        output = self.main(input)
-        return output
-# The output is range from 0 to 1
-
-
 # Discriminator Without Max Pooling
-class netD(nn.Module):
+class Unet(nn.Module):
 
     def __init__(self, num_classes=1):
-        super(netD, self).__init__()
+        super(Unet, self).__init__()
 
         #128*128
         self.down1 = nn.Sequential(
